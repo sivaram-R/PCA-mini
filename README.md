@@ -3,40 +3,19 @@
 This project is a CUDA-based image processing application that allows users to convert images to grayscale and mirror them horizontally. It utilizes the OpenCV library for image processing and the Boost library for command-line argument parsing.
 
 ## Algorithm
-Initialize Libraries:
+1.Parse command-line arguments for input file, output file, and transformation options (mirror/gray).
+2.Load input image using OpenCV.
+3.Allocate memory on GPU for input and output images.
+4.Copy input image from host to device (GPU).
+5.Launch CUDA kernel:
+6.If --mirror option is set, apply mirror transformation.
+7.If --gray option is set, convert the image to grayscale.
+8.Synchronize GPU to ensure the kernel finishes processing.
+9.Copy output image from device back to host.
+10.Save output image to file using OpenCV.
+11.Free GPU memory.
+12.Exit the program.
 
-Initialize OpenCV for reading and writing images.
-Initialize Boost to handle command-line options.
-Parse Command-Line Arguments:
-
-Parse input arguments for:
-The image file to process.
-Output file name.
-Whether to mirror or convert to grayscale.
-Read Input Image:
-
-Use OpenCV to load the image into a Mat object.
-Memory Allocation:
-
-Allocate memory on the GPU for the input and output image using cudaMalloc.
-Copy the input image from the host (CPU) memory to device (GPU) memory using cudaMemcpy.
-CUDA Kernels:
-
-If the --mirror option is provided, launch the mirrorImage kernel to mirror the image horizontally on the GPU.
-If the --gray option is provided, launch the rgbtogray kernel to convert the image from RGB to grayscale on the GPU.
-Synchronization:
-
-Ensure the GPU kernels complete using cudaDeviceSynchronize.
-Copy Output to Host:
-
-Copy the processed image data from device memory back to host memory using cudaMemcpy.
-Free Memory:
-
-Free the allocated GPU memory with cudaFree.
-Write Output Image:
-
-Use OpenCV to write the processed image to disk.
-Exit Program.
 ## Outputs
 
 Original image:
@@ -52,8 +31,3 @@ Filtered image (Mirror):
   <img  src="animal-mirror.jpg" alt="alt text" width="50%" height="50%" title="Box filtering using GPU">
 </p>
 
-For example:
-
-```bash
-./imageFilter input.jpg -o output.jpg -m
-```
