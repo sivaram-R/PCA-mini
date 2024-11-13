@@ -2,49 +2,55 @@
 
 This project is a CUDA-based image processing application that allows users to convert images to grayscale and mirror them horizontally. It utilizes the OpenCV library for image processing and the Boost library for command-line argument parsing.
 
-## Example
+## Algorithm
+Initialize Libraries:
+
+Initialize OpenCV for reading and writing images.
+Initialize Boost to handle command-line options.
+Parse Command-Line Arguments:
+
+Parse input arguments for:
+The image file to process.
+Output file name.
+Whether to mirror or convert to grayscale.
+Read Input Image:
+
+Use OpenCV to load the image into a Mat object.
+Memory Allocation:
+
+Allocate memory on the GPU for the input and output image using cudaMalloc.
+Copy the input image from the host (CPU) memory to device (GPU) memory using cudaMemcpy.
+CUDA Kernels:
+
+If the --mirror option is provided, launch the mirrorImage kernel to mirror the image horizontally on the GPU.
+If the --gray option is provided, launch the rgbtogray kernel to convert the image from RGB to grayscale on the GPU.
+Synchronization:
+
+Ensure the GPU kernels complete using cudaDeviceSynchronize.
+Copy Output to Host:
+
+Copy the processed image data from device memory back to host memory using cudaMemcpy.
+Free Memory:
+
+Free the allocated GPU memory with cudaFree.
+Write Output Image:
+
+Use OpenCV to write the processed image to disk.
+Exit Program.
+## Outputs
 
 Original image:
 <p align="center">
-  <img  src="output/animal.jpg" alt="alt text" width="50%" height="50%" title="Box filtering using GPU">
+  <img  src="animal.jpg" alt="alt text" width="50%" height="50%" title="Box filtering using GPU">
 </p>
 Filtered image (Grayscale): 
 <p align="center">
-  <img  src="output/animal-gray.jpg" alt="alt text" width="50%" height="50%" title="Box filtering using GPU">
+  <img  src="animal-gray.jpg" alt="alt text" width="50%" height="50%" title="Box filtering using GPU">
 </p>
 Filtered image (Mirror): 
 <p align="center">
-  <img  src="output/animal-mirror.jpg" alt="alt text" width="50%" height="50%" title="Box filtering using GPU">
+  <img  src="animal-mirror.jpg" alt="alt text" width="50%" height="50%" title="Box filtering using GPU">
 </p>
-
-## Prerequisites
-
-Before running the program, ensure you have the following dependencies installed:
-
-- NVIDIA CUDA Toolkit
-- OpenCV (>= 2.4)
-
-## Compilation
-
-Compile the code using NVCC with the following command:
-
-```bash
-nvcc -arch=sm_37 imageFilter.cu -o imageFilter -lboost_program_options `pkg-config opencv --cflags --libs`
-```
-
-The -arch=sm_37 flag specifies the compute capability of the GPU architecture targeted for compilation. In this case, it targets devices with compute capability 3.7. Adjust this flag according to your GPU's compute capability if necessary. You can find the compute capability of your GPU in the NVIDIA documentation.
-
-## Usage
-Run the compiled executable with the following command:
-```bash
-./imageFilter input_image [options]
-```
-
-Replace input_image with the path to your input image. You can also specify the following options:
-
--   -o, --output: Specify the output file name (default is "output.jpg").
--   -m, --mirror: Mirror the input image.
--   -g, --gray: Convert the input image to grayscale.
 
 For example:
 
